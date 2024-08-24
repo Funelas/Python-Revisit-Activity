@@ -1,5 +1,4 @@
 # TO Do LIST
-# Fix the typing effect to enable 'end' argument
 # If possible, make an 'add pokemon' feature that lets user add a customized name and the system will assign a base power to it
 # Create a system where a win streak != forever winning
 # CLEAN CODE!!!!
@@ -313,10 +312,14 @@ def game_start():
                             typing_effect("WARNING: You will lose your pokemon's current power if you proceed.")
                             print("Press the key of your preferred selection:\n'b' : Go back\n'p' : Proceed")
                             change_input = input()
-                            if change_input == "b":
+                            if change_input.lower() == "b":
                                 continue
+                                
                         player_pokemon = character_selection()
                         player_power_base = 0
+                        if change_input.lower() == 'p':
+                            opponent_pokemon = opponent_character_selection()
+                            opponent_power_base = 0
                         player_power_base, opponent_power_base = power_computation(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, player_power_base= player_power_base, opponent_power_base= opponent_power_base)
                         final_player_power, final_opponent_power, player_buffornerf, opponent_buffornerf = element_interaction_buffsandnerfs(player_pokemon = player_pokemon, opponent_pokemon = opponent_pokemon, player_power_base = player_power_base, opponent_power_base = opponent_power_base)
                         battle_outcome, post_player_power_base, post_opponent_power_base, match_id = battle(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, final_player_power= final_player_power, final_opponent_power= final_opponent_power, match_id= match_id)
@@ -334,78 +337,83 @@ def game_start():
                         print("Invalid Input.")
         elif user_input.lower() == "b":
             print("""Welcome to Pokemon Battle Simulator (Terminal Edition) where you fight with a randomly generated pokemon and rely
-    on RNG (Random Number Generator) to win the battles!
-    To start, you will be choosing your pokemon by entering the corresponding letter of the pokemon.
+on RNG (Random Number Generator) to win the battles!
+To start, you will be choosing your pokemon by entering the corresponding letter of the pokemon.
 
-    Example:
-    a). Pikachu         b). Charmander
+Example:
+a). Pikachu         b). Charmander
 
-    Entering 'a' will have you selecting Pikachu, otherwise, the corresponding pokemon of your selected letter.
-    After you choose a pokemon, the computer will prompt a message showing the pokemon selected by the opponent which is
-    randomly selected. \n\n""")
+Entering 'a' will have you selecting Pikachu, otherwise, the corresponding pokemon of your selected letter.
+After you choose a pokemon, the computer will prompt a message showing the pokemon selected by the opponent which is
+randomly selected. \n\n""")
             input("Enter any key to continue: ")
             
             print("""\n\nAfter both the player and the opponent has selected a pokemon, they will be assessed if their elements have interaction.
-    The following are the Elements and their Interactions:" 
-        
-    Electric Type:                          Fire Type:                                          Grass Type:
-    - Strong Against: Water                 - Strong Against: Grass, Bug, Ice, Steel            - Strong Against: Water, Rock    
-    - Weak Against: None                    - Weak Against: Water, Rock, Fire                   - Weak Against: Fire, Bug 
+The following are the Elements and their Interactions:
+    
+Electric Type:                          Fire Type:                                          Grass Type:
+- Strong Against: Water                 - Strong Against: Grass, Bug, Ice, Steel            - Strong Against: Water, Rock    
+- Weak Against: None                    - Weak Against: Water, Rock, Fire                   - Weak Against: Fire, Bug 
 
-    Poison Type:                            Water Type:                                         Bug Type:                                
-    - Strong Against: Grass, Fairy          - Strong Against: Fire, Rock                        - Strong Against: Grass, Psychic, Dark   
-    - Weak Against: Poison, Psychic         - Weak Against: Electric, Grass                     - Weak Against: Fire, Rock        
+Poison Type:                            Water Type:                                         Bug Type:                                
+- Strong Against: Grass, Fairy          - Strong Against: Fire, Rock                        - Strong Against: Grass, Psychic, Dark   
+- Weak Against: Poison, Psychic         - Weak Against: Electric, Grass                     - Weak Against: Fire, Rock        
 
-    Normal Type:                            Fighting Type:                                      Fairy Type:
-    - Strong Against: None                  - Strong Against: Normal, Ice, Rock, Dark, Steel    - Strong Against: Fighting, Bug, Dark
-    - Weak Against: Rock, Steel             - Weak Against: Psychic, Fairy                      - Weak Against: Poison, Steel
+Normal Type:                            Fighting Type:                                      Fairy Type:
+- Strong Against: None                  - Strong Against: Normal, Ice, Rock, Dark, Steel    - Strong Against: Fighting, Bug, Dark
+- Weak Against: Rock, Steel             - Weak Against: Psychic, Fairy                      - Weak Against: Poison, Steel
 
-    Psychic Type:                           Ice Type:                                           Steel Type: 
-    - Strong Against: Fighting, Poison      - Strong Against: Grass, Dragon                     - Strong Against: Ice, Rock, Fairy   
-    - Weak Against: Bug, Dark               - Weak Against: Fire, Steel                         - Weak Against: Fire, Water, Electric
+Psychic Type:                           Ice Type:                                           Steel Type: 
+- Strong Against: Fighting, Poison      - Strong Against: Grass, Dragon                     - Strong Against: Ice, Rock, Fairy   
+- Weak Against: Bug, Dark               - Weak Against: Fire, Steel                         - Weak Against: Fire, Water, Electric
 
-    Rock Type:                              Dark Type:
-    - Strong Against: Fire, Bug, Ice        - Strong Against: Psychic, Dark 
-    - Weak Against: Fighting, Steel         - Weak Against: Fighting, Bug, Fairy
-    \n""")
+Rock Type:                              Dark Type:
+- Strong Against: Fire, Bug, Ice        - Strong Against: Psychic, Dark 
+- Weak Against: Fighting, Steel         - Weak Against: Fighting, Bug, Fairy
+\n""")
             input("Enter any key to continue: ")
-            print("""Choosing a good elemental pokemon might also be one of the way to have your win!
-            If you are faced with an element that you are STRONG against, you will have a chance to have a buff points ranging from 0 - 45 
-            points, which is pretty big if you are against someone who have high power base. Beside this buff, the opponent's pokemon will
-            also receive a nerf points ranging from -15 to 0.
-            On the other hand, if you are faced with a pokemon that you are WEAK against, your pokemon will be the one to have the nerf
-            ranging from -15 to 0 points, while the opponent's pokemon will receive the buff ranging from 0 - 45 points.
-            If somehow the player and the opponent's pokemon elements does not have any interaction with each other, they will rather receive either a buff or a nerf ranging from -20 to 45.
-            This system can bring clutch to every match up and also significantly lowers the chance of a tie.""")
+            print("""\nChoosing a good elemental pokemon might also be one of the way to have your win!
+
+If you are faced with an element that you are STRONG against, you will have a chance to have a buff points ranging from 0 - 45 
+points, which is pretty big if you are against someone who have high power base. Beside this buff, the opponent's pokemon will
+also receive a nerf points ranging from -15 to 0.
+
+On the other hand, if you are faced with a pokemon that you are WEAK against, your pokemon will be the one to have the nerf
+ranging from -15 to 0 points, while the opponent's pokemon will receive the buff ranging from 0 - 45 points.
+
+If somehow the player and the opponent's pokemon elements does not have any interaction with each other, they will rather receive either a buff or a nerf ranging from -20 to 45.
+
+This system can bring clutch to every match up and also significantly lowers the chance of a tie.\n""")
             input("Enter any key to continue: ")
-            print("""After the final power of each pokemons are computed, they will now engage to a combat. Take note that the pokemon
-                that has the LARGER or GREATER power will WIN.""")
+            print("""\nAfter the final power of each pokemons are computed, they will now engage to a combat. Take note that the pokemon
+that has the LARGER or GREATER power will WIN.\n""")
             input("Enter any key to continue: ")
-            print("""After the combat, the pokemon with the greater power will consume the power of the weaker one. Therefore increasing your odds to win the next games. But if you happen to lose, your opponent will be the one to absorb your power, which can be troublesome
-                to your next game.""")
+            print("""\nAfter the combat, the pokemon with the greater power will consume the power of the weaker one. Therefore increasing 
+your odds to win the next games. But if you happen to lose, your opponent will be the one to absorb your power, which can be troublesome
+to your next game.\n""")
             input("Enter any key to continue: ")
-            print("""After the winning pokemon absorbs the power of the losing pokemon, the battle is officially over. You will be prompted 
-                then with a message with the following:
-                Enter the following keys of your selection:
-                'c' : Change Character
-                'x' : Exit Program
-                'm' : Monitor History
-                'y' : Continue (If you happen to win the battle)
-                
-                Choosing 'c' will have you change your pokemon. WARNING: If you choose to change your pokemon when you won a battle will
-                make you lose the power you currently have. This will still make you face the same opponent.
-                Choosing 'x' will make you exit the program and lose all the progress you and the opponent made.
-                Choosing 'm' will have you look at the history tab of all the matches you and the opponent made. You can look at all the
-                details such as pokemon used, base power, final power, buff or nerf points and more. 
-                Choosing 'y' will have you continue battling with the same pokemon you used in the previous battle with the absorbed
-                power from all the pokemon you fought previously.
-                """)
+            print("""\nAfter the winning pokemon absorbs the power of the losing pokemon, the battle is officially over. You will be 
+prompted then with a message with the following:
+Enter the following keys of your selection:
+'c' : Change Character
+'x' : Exit Program
+'m' : Monitor History
+'y' : Continue (If you happen to win the battle)
+
+Choosing 'c' will have you change your pokemon. WARNING: If you choose to change your pokemon when you won a battle will
+make you lose the power you currently have. This will still make you face the same opponent.
+Choosing 'x' will make you exit the program and lose all the progress you and the opponent made.
+Choosing 'm' will have you look at the history tab of all the matches you and the opponent made. You can look at all the
+details such as pokemon used, base power, final power, buff or nerf points and more. 
+Choosing 'y' will have you continue battling with the same pokemon you used in the previous battle with the absorbed
+power from all the pokemon you fought previously.\n
+""")
             input("Enter any key to continue: ")
-            print("""[Some tips]
-            If you have lost, take note of their element and compare which pokemon element they are weak against. You can use this to
-            have an edge in the battle
-            If you are stuck and think that the battle is unwinnable, just restart the program by closing or rerunning it. 
-            ~~More updates in the future. GOOD LUCK AND HAVE FUN!!!~~""")
+            print("""\n[Some tips]
+If you have lost, take note of their element and compare which pokemon element they are weak against. You can use this to
+have an edge in the battle
+If you are stuck and think that the battle is unwinnable, just restart the program by closing or rerunning it. 
+~~More updates in the future. GOOD LUCK AND HAVE FUN!!!~~\n""")
             input("Enter any key to continue: ")
             continue
         else:
