@@ -1,11 +1,8 @@
 # TO Do LIST
 # Fix the typing effect to enable 'end' argument
-# Make the same pokemon opponent stay if player lost
 # If possible, make an 'add pokemon' feature that lets user add a customized name and the system will assign a base power to it
 # Create a system where a win streak != forever winning
 # CLEAN CODE!!!!
-
-# INDICATE EVERY GLOBAL VARIABLE TO BE ARGUMENTS OF EACH FUNCTIONS !
 
 
 
@@ -26,24 +23,40 @@ def game_start():
     "g": ["Snorlax", 80, "Normal"],
     "h": ["Gengar", 70, "Poison"],
     "i": ["Machamp", 75, "Fighting"],
-    "j": ["Mewtwo", 90, "Psychic"]
+    "j": ["Mewtwo", 90, "Psychic"],
+    "k": ["Articuno", 70, "Ice"],
+    "l": ["Geodude", 40, "Rock"],
+    "m": ["Umbreon", 60, "Dark"],
+    "n": ["Steelix", 75, "Steel"],
+    "o": ["Clefairy", 60, "Fairy"],
+    "p": ["Butterfree", 60, "Bug"],
+    "q": ["Leafeon", 65, "Grass"],
+     "r": ["Jolteon", 65, "Electric"],
+    "s": ["Electrode", 60, "Electric"],
+    "t": ["Vulpix", 50, "Fire"],
+    "u": ["Arcanine", 80, "Fire"],
+    "v": ["Lapras", 80, "Water"],
+    "w": ["Gyarados", 95, "Water"],
+    "x": ["Nidoking", 81, "Poison"],
+    "y": ["Hitmonchan", 50, "Fighting"],
+    "z": ["Alakazam", 55, "Psychic"]
     }
-
+    
     type_interactions = {
     "Electric": [
-        ["Water", "Flying"],  # Strong Against
-        ["Ground"]            # Weak Against
+        ["Water"],                         # Strong Against
+        []                                # Weak Against
     ],
     "Fire": [
-        ["Grass", "Bug", "Ice", "Steel"],  # Strong Against
-        ["Water", "Rock", "Fire"]          # Weak Against
+        ["Grass", "Bug", "Ice", "Steel"], # Strong Against
+        ["Water", "Rock", "Fire"]         # Weak Against
     ],
     "Poison": [
-        ["Grass", "Fairy"],                # Strong Against
-        ["Poison", "Ground", "Psychic"]    # Weak Against
+        ["Grass", "Fairy"],               # Strong Against
+        ["Poison", "Psychic"]             # Weak Against
     ],
     "Water": [
-        ["Fire", "Ground", "Rock"],       # Strong Against
+        ["Fire", "Rock"],                 # Strong Against
         ["Electric", "Grass"]             # Weak Against
     ],
     "Normal": [
@@ -51,14 +64,43 @@ def game_start():
         ["Rock", "Steel"]                 # Weak Against
     ],
     "Fighting": [
-        ["Normal", "Ice", "Rock", "Dark", "Steel"],  # Strong Against
-        ["Flying", "Psychic", "Fairy"]               # Weak Against
+        ["Normal", "Ice", "Rock", "Dark", "Steel"], # Strong Against
+        ["Psychic", "Fairy"]              # Weak Against
     ],
     "Psychic": [
         ["Fighting", "Poison"],           # Strong Against
-        ["Bug", "Ghost", "Dark"]          # Weak Against
+        ["Bug", "Dark"]                   # Weak Against
+    ],
+    "Ice": [
+        ["Grass", "Dragon"],              # Strong Against
+        ["Fire", "Steel"]                 # Weak Against
+    ],
+    "Rock": [
+        ["Fire", "Bug", "Ice"],           # Strong Against
+        ["Fighting", "Steel"]             # Weak Against
+    ],
+    "Dark": [
+        ["Psychic", "Dark"],              # Strong Against
+        ["Fighting", "Bug", "Fairy"]     # Weak Against
+    ],
+    "Steel": [
+        ["Ice", "Rock", "Fairy"],         # Strong Against
+        ["Fire", "Water", "Electric"]    # Weak Against
+    ],
+    "Fairy": [
+        ["Fighting", "Bug", "Dark"],      # Strong Against
+        ["Poison", "Steel"]               # Weak Against
+    ],
+    "Bug": [
+        ["Grass", "Psychic", "Dark"],     # Strong Against
+        ["Fire", "Rock"]                  # Weak Against
+    ],
+    "Grass": [
+        ["Water", "Rock"],                # Strong Against
+        ["Fire", "Bug"]                   # Weak Against
     ]
-    }
+}
+
 
     voicelines = [
     "After a destructive attack, the battlefield is in ruins!",
@@ -89,23 +131,28 @@ def game_start():
     battle_history = []
     table_head = ["Match\nID", "User\nPokemon","User\nBase Power", "Buff/Nerf\n Points", "User\nFinal Power", "Opponent's\nPokemon","User\nBase Power", "Buff/Nerf\n Points", "Opponent's\nFinal Power", "Battle\nOutcome", "Post-User\nFinal Power", "Post-Opponent's\nFinal Power"]
     
-    def typing_effect(text, delay=0.1): # Need to fix, Should consider putting 'end = ""' argument
+    def typing_effect(text, delay=0.1, end = False): # Need to fix, Should consider putting 'end = ""' argument
         for char in text:
             print(char, end="", flush=True)
             t.sleep(delay)
-        print()
+        if end:
+            print(end= "")
+        else:
+            print()
 
     def character_selection (): # Done: Able to save Player's Pokemon
         while True:
             typing_effect("Please select your pokemon:")
             counter = 1
             for key in pokemon_dictionary:
-                str_print = f"{key}). {pokemon_dictionary[key][0]}" + (" "*(13 - len(pokemon_dictionary[key][0])))
-                if counter == 2:
+                pokemon_string = f"{key}). {pokemon_dictionary[key][0]} ({pokemon_dictionary[key][2]})"
+                str_print = pokemon_string + (" "*(30 - len(pokemon_string)))
+                if counter == 3:
                     str_print += "\n"
                     counter = 0
                 print (str_print, end="")
                 counter += 1
+            print()
             character_selection_input = input("")
             if character_selection_input.lower() in pokemon_dictionary:
                 typing_effect(f"Your Pokemon is {pokemon_dictionary[character_selection_input.lower()][0]}!")
@@ -118,12 +165,12 @@ def game_start():
 
     def opponent_character_selection(): #Done: Able to save Opponent's Pokemon
         opponent_selection = rm.choice(list(pokemon_dictionary.keys()))
-        print(f"Your Opponent's Pokemon is", end="")
+        typing_effect(f"Your Opponent's Pokemon is", end= True)
         for i in range(3):
             t.sleep(0.8)
             print(".", end="", flush = True)
         t.sleep(0.8)
-        print(f"{pokemon_dictionary[opponent_selection][0]}!")
+        typing_effect(f"{pokemon_dictionary[opponent_selection][0]}!")
         opponent_pokemon = pokemon_dictionary[opponent_selection]
         return opponent_pokemon
     def power_computation(player_pokemon, opponent_pokemon, player_power_base = 0 , opponent_power_base = 0): #Done: Able to save player and opponent power base
@@ -134,13 +181,13 @@ def game_start():
         return player_power_base, opponent_power_base
     def element_interaction_buffsandnerfs(player_pokemon, opponent_pokemon, player_power_base, opponent_power_base): #Done: Able to save final power of both player and opponent
         if (opponent_pokemon[2] in type_interactions[player_pokemon[2]][0]) or (opponent_pokemon[2] in type_interactions[player_pokemon[2]][1]):
-            print("Element Interaction Found!")
+            typing_effect("Element Interaction Found!")
             if opponent_pokemon[2] in type_interactions[player_pokemon[2]][0]:
                 player_buffornerf = rm.randint(0, 45)
                 opponent_buffornerf = rm.randint(-15, 0)
                 player_power_base += player_buffornerf
                 opponent_power_base += opponent_buffornerf
-                print(
+                typing_effect(
                     f"Player's pokemon element ({player_pokemon[2]}) is very effective against Opponent's pokemon element ({opponent_pokemon[2]})\n"
                     f"Player's Final Power: {player_power_base}\n" 
                     f"Opponent's Final Power: {opponent_power_base}")
@@ -149,7 +196,7 @@ def game_start():
                 opponent_buffornerf = rm.randint(0, 45)
                 opponent_power_base += opponent_buffornerf
                 player_power_base += player_buffornerf
-                print(
+                typing_effect(
                     f"Player's pokemon element ({player_pokemon[2]}) is ineffective against Opponent's pokemon element ({opponent_pokemon[2]})\n"
                     f"Player's Final Power: {player_power_base}\n"
                     f"Opponent's Final Power: {opponent_power_base}")
@@ -158,13 +205,13 @@ def game_start():
             opponent_buffornerf = rm.randint(-20, 45)
             opponent_power_base += opponent_buffornerf
             player_power_base += player_buffornerf
-            print(
+            typing_effect(
                 f"Player's pokemon element ({player_pokemon[2]}) only deals normal damage against Opponent's pokemon element ({opponent_pokemon[2]})\n"
                 f"Player's Final Power: {player_power_base}\n"
                 f"Opponent's Final Power: {opponent_power_base}")
         return player_power_base, opponent_power_base, player_buffornerf, opponent_buffornerf
     def battle (player_pokemon , opponent_pokemon , final_player_power, final_opponent_power, voicelines = voicelines, ending_voicelines = ending_voicelines, match_id = 0):
-        print("Commencing Battle in...", end= "")
+        typing_effect("Commencing Battle in...", end= True, delay= 0.05)
         for i in range(3,0,-1):
             t.sleep(1)
             print(f"{i}", end="", flush = True)
@@ -181,35 +228,35 @@ def game_start():
             voicelines_num = rm.randint(1,9)
             while voicelines_num in used_voiceline:
                 voicelines_num = rm.randint(1,9)
-            typing_effect(voicelines[voicelines_num])
+            typing_effect(voicelines[voicelines_num], delay= 0.05)
             used_voiceline.append(voicelines_num)
         typing_effect(rm.choice(ending_voicelines))
         post_opponent_power_base = 0
         post_player_power_base = 0
         
         if final_player_power > final_opponent_power:
-            print("You Won!")
-            print("As a result, your pokemon will now absorb the power base of the opponent's pokemon", end= "")
+            typing_effect("You Won!")
+            typing_effect("As a result, your pokemon will now absorb the power base of the opponent's pokemon", end= True)
             for i in range(3):
                 t.sleep(0.8)
                 print(".", end="", flush= True)
             print()
             post_player_power_base +=  final_player_power + final_opponent_power
-            print("Absorbed!")
+            typing_effect("Absorbed!")
             t.sleep(0.5)
             typing_effect(f"Your Pokemon ({player_pokemon[0]}) has a total of {post_player_power_base} base power!")
             battle_outcome = "won"
             post_opponent_power_base = 0
             
         elif final_player_power < final_opponent_power:
-            print("You Lost.")
-            print("As a result, your pokemon's base power will be absorbed by the opponent's pokemon", end= "")
+            typing_effect("You Lost.")
+            typing_effect("As a result, your pokemon's base power will be absorbed by the opponent's pokemon", end= True)
             for i in range(3):
                 t.sleep(0.8)
                 print(".", end="", flush= True)
             print()
             post_opponent_power_base += final_player_power + final_opponent_power
-            print("Absorbed.")
+            typing_effect("Absorbed.")
             t.sleep(0.8)
             typing_effect(f"Opponent's Pokemon ({opponent_pokemon[0]}) has a total of {post_opponent_power_base} base power!")
             battle_outcome = "lost"
@@ -224,74 +271,143 @@ def game_start():
             
         match_id += 1
         return battle_outcome , post_player_power_base, post_opponent_power_base, match_id
-        # battle_history.append([match_id, player_pokemon[0], player_power_base, opponent_pokemon[0], opponent_power_base, battle_outcome, final_player_power_base, final_opponent_power_base])
-        # if battle_outcome == "win":
-        #     opponent_power_base = 0
-        # elif battle_outcome =="lost":
-        #     player_power_base = 0
-        # elif battle_outcome == "tie":
-        #     player_power_base = 0
-        #     opponent_power_base  = 0
         
-    user_input = input("Welcome to Pokemon Battle Simulator (Terminal Edition)\n"
-              "a). Play\n"
-              "b). Help\n")
-
-    if user_input.lower() == "a":
-        while True:
-            player_pokemon = character_selection()
-            opponent_pokemon = opponent_character_selection()
-            player_power_base , opponent_power_base = power_computation(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon)
-            final_player_power, final_opponent_power, player_buffornerf, opponent_buffornerf = element_interaction_buffsandnerfs(player_pokemon = player_pokemon, opponent_pokemon = opponent_pokemon, player_power_base = player_power_base, opponent_power_base = opponent_power_base)
-            battle_outcome, post_player_power_base, post_opponent_power_base, match_id = battle(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, final_player_power= final_player_power, final_opponent_power= final_opponent_power)
-            battle_history.append([match_id, player_pokemon[0],player_power_base ,f"+{player_buffornerf}" if player_buffornerf > 0 else player_buffornerf, final_player_power, opponent_pokemon[0], opponent_power_base,f"+{opponent_buffornerf}"if opponent_buffornerf > 0 else opponent_buffornerf, final_opponent_power, battle_outcome, post_player_power_base, post_opponent_power_base])
-            player_power_base = post_player_power_base
-            opponent_power_base = post_opponent_power_base
+    typing_effect("Welcome to Pokemon Battle Simulator (Terminal Edition)", delay= 0.05)
+    while True:
+        user_input = input("a). Play\nb). Help\n")
+        if user_input.lower() == "a":
             while True:
-                typing_effect("Do you want to continue battling?")
-                print(f"Enter the following keys of your selection:\n'c' : Change Character\n'x' : Exit Program\n'm' : Monitor History\n", end = "")
-                if battle_outcome == "won":
-                    print(f"'y' : Continue")
-                user_choice = input()
-                if user_choice.lower() == "m":
-                    print(tabulate(battle_history, headers= table_head, tablefmt="pretty"))
-                    input("Enter any key to go back.")
-                    continue
-                elif user_choice.lower() =="y":
+                player_pokemon = character_selection()
+                opponent_pokemon = opponent_character_selection()
+                player_power_base , opponent_power_base = power_computation(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon)
+                final_player_power, final_opponent_power, player_buffornerf, opponent_buffornerf = element_interaction_buffsandnerfs(player_pokemon = player_pokemon, opponent_pokemon = opponent_pokemon, player_power_base = player_power_base, opponent_power_base = opponent_power_base)
+                battle_outcome, post_player_power_base, post_opponent_power_base, match_id = battle(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, final_player_power= final_player_power, final_opponent_power= final_opponent_power)
+                battle_history.append([match_id, player_pokemon[0],player_power_base ,f"+{player_buffornerf}" if player_buffornerf > 0 else player_buffornerf, final_player_power, opponent_pokemon[0], opponent_power_base,f"+{opponent_buffornerf}"if opponent_buffornerf > 0 else opponent_buffornerf, final_opponent_power, battle_outcome, post_player_power_base, post_opponent_power_base])
+                player_power_base = post_player_power_base
+                opponent_power_base = post_opponent_power_base
+                while True:
+                    typing_effect("Do you want to continue battling?")
+                    print(f"Enter the following keys of your selection:\n'c' : Change Character\n'x' : Exit Program\n'm' : Monitor History\n", end = "")
                     if battle_outcome == "won":
-                        opponent_pokemon = opponent_character_selection()
+                        print(f"'y' : Continue")
+                    user_choice = input()
+                    if user_choice.lower() == "m":
+                        print(tabulate(battle_history, headers= table_head, tablefmt="pretty"))
+                        input("Enter any key to go back.")
+                        continue
+                    elif user_choice.lower() =="y":
+                        if battle_outcome == "won":
+                            opponent_pokemon = opponent_character_selection()
+                            player_power_base, opponent_power_base = power_computation(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, player_power_base= player_power_base, opponent_power_base= opponent_power_base)
+                            final_player_power, final_opponent_power, player_buffornerf, opponent_buffornerf = element_interaction_buffsandnerfs(player_pokemon = player_pokemon, opponent_pokemon = opponent_pokemon, player_power_base = player_power_base, opponent_power_base = opponent_power_base)
+                            battle_outcome, post_player_power_base, post_opponent_power_base, match_id = battle(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, final_player_power= final_player_power, final_opponent_power= final_opponent_power, match_id= match_id)
+                            battle_history.append([match_id, player_pokemon[0],player_power_base ,f"+{player_buffornerf}" if player_buffornerf > 0 else player_buffornerf, final_player_power, opponent_pokemon[0], opponent_power_base,f"+{opponent_buffornerf}"if opponent_buffornerf > 0 else opponent_buffornerf, final_opponent_power, battle_outcome, post_player_power_base, post_opponent_power_base])
+                            player_power_base = post_player_power_base
+                            opponent_power_base = post_opponent_power_base
+                            continue
+                        else:
+                            print("Invalid Input.")
+                    elif user_choice.lower() == "c":
+                        if battle_outcome == "won":
+                            typing_effect("Are you sure?")
+                            typing_effect("WARNING: You will lose your pokemon's current power if you proceed.")
+                            print("Press the key of your preferred selection:\n'b' : Go back\n'p' : Proceed")
+                            change_input = input()
+                            if change_input == "b":
+                                continue
+                        player_pokemon = character_selection()
+                        player_power_base = 0
                         player_power_base, opponent_power_base = power_computation(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, player_power_base= player_power_base, opponent_power_base= opponent_power_base)
-                        final_player_power, final_opponent_power = element_interaction_buffsandnerfs(player_pokemon = player_pokemon, opponent_pokemon = opponent_pokemon, player_power_base = player_power_base, opponent_power_base = opponent_power_base)
+                        final_player_power, final_opponent_power, player_buffornerf, opponent_buffornerf = element_interaction_buffsandnerfs(player_pokemon = player_pokemon, opponent_pokemon = opponent_pokemon, player_power_base = player_power_base, opponent_power_base = opponent_power_base)
                         battle_outcome, post_player_power_base, post_opponent_power_base, match_id = battle(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, final_player_power= final_player_power, final_opponent_power= final_opponent_power, match_id= match_id)
-                        battle_history.append([match_id, player_pokemon[0], final_player_power, opponent_pokemon[0], final_opponent_power, battle_outcome, post_player_power_base, post_opponent_power_base])
+                        battle_history.append([match_id, player_pokemon[0],player_power_base ,f"+{player_buffornerf}" if player_buffornerf > 0 else player_buffornerf, final_player_power, opponent_pokemon[0], opponent_power_base,f"+{opponent_buffornerf}"if opponent_buffornerf > 0 else opponent_buffornerf, final_opponent_power, battle_outcome, post_player_power_base, post_opponent_power_base])
                         player_power_base = post_player_power_base
                         opponent_power_base = post_opponent_power_base
                         continue
+                    
+                    elif user_choice.lower()== "x":
+                        typing_effect("Thank you for playing the game! See you next time.")
+                        t.sleep(1)
+                        quit()
+
                     else:
                         print("Invalid Input.")
-                   
-                elif user_choice.lower()== "x":
-                    quit()
+        elif user_input.lower() == "b":
+            print("""Welcome to Pokemon Battle Simulator (Terminal Edition) where you fight with a randomly generated pokemon and rely
+    on RNG (Random Number Generator) to win the battles!
+    To start, you will be choosing your pokemon by entering the corresponding letter of the pokemon.
 
-                else:
-                    print("Invalid Input.")
-        
-        
-    elif user_input.lower() == "b":
-        print("Under Construction")
-    else:
-        print("Invalid input selection")
-    
-    
-# 
+    Example:
+    a). Pikachu         b). Charmander
 
-    
-#     
-    
-#     
-#     
-#     
-#     # table_head = ["Match ID", "User Pokemon", "User Final Power", "Opponent's Pokemon", "Opponent's Final Power", "Battle Outcome", "Post-User Final Power", "Post-Opponent's Final Power"]
-#     
+    Entering 'a' will have you selecting Pikachu, otherwise, the corresponding pokemon of your selected letter.
+    After you choose a pokemon, the computer will prompt a message showing the pokemon selected by the opponent which is
+    randomly selected. \n\n""")
+            input("Enter any key to continue: ")
+            
+            print("""\n\nAfter both the player and the opponent has selected a pokemon, they will be assessed if their elements have interaction.
+    The following are the Elements and their Interactions:" 
+        
+    Electric Type:                          Fire Type:                                          Grass Type:
+    - Strong Against: Water                 - Strong Against: Grass, Bug, Ice, Steel            - Strong Against: Water, Rock    
+    - Weak Against: None                    - Weak Against: Water, Rock, Fire                   - Weak Against: Fire, Bug 
+
+    Poison Type:                            Water Type:                                         Bug Type:                                
+    - Strong Against: Grass, Fairy          - Strong Against: Fire, Rock                        - Strong Against: Grass, Psychic, Dark   
+    - Weak Against: Poison, Psychic         - Weak Against: Electric, Grass                     - Weak Against: Fire, Rock        
+
+    Normal Type:                            Fighting Type:                                      Fairy Type:
+    - Strong Against: None                  - Strong Against: Normal, Ice, Rock, Dark, Steel    - Strong Against: Fighting, Bug, Dark
+    - Weak Against: Rock, Steel             - Weak Against: Psychic, Fairy                      - Weak Against: Poison, Steel
+
+    Psychic Type:                           Ice Type:                                           Steel Type: 
+    - Strong Against: Fighting, Poison      - Strong Against: Grass, Dragon                     - Strong Against: Ice, Rock, Fairy   
+    - Weak Against: Bug, Dark               - Weak Against: Fire, Steel                         - Weak Against: Fire, Water, Electric
+
+    Rock Type:                              Dark Type:
+    - Strong Against: Fire, Bug, Ice        - Strong Against: Psychic, Dark 
+    - Weak Against: Fighting, Steel         - Weak Against: Fighting, Bug, Fairy
+    \n""")
+            input("Enter any key to continue: ")
+            print("""Choosing a good elemental pokemon might also be one of the way to have your win!
+            If you are faced with an element that you are STRONG against, you will have a chance to have a buff points ranging from 0 - 45 
+            points, which is pretty big if you are against someone who have high power base. Beside this buff, the opponent's pokemon will
+            also receive a nerf points ranging from -15 to 0.
+            On the other hand, if you are faced with a pokemon that you are WEAK against, your pokemon will be the one to have the nerf
+            ranging from -15 to 0 points, while the opponent's pokemon will receive the buff ranging from 0 - 45 points.
+            If somehow the player and the opponent's pokemon elements does not have any interaction with each other, they will rather receive either a buff or a nerf ranging from -20 to 45.
+            This system can bring clutch to every match up and also significantly lowers the chance of a tie.""")
+            input("Enter any key to continue: ")
+            print("""After the final power of each pokemons are computed, they will now engage to a combat. Take note that the pokemon
+                that has the LARGER or GREATER power will WIN.""")
+            input("Enter any key to continue: ")
+            print("""After the combat, the pokemon with the greater power will consume the power of the weaker one. Therefore increasing your odds to win the next games. But if you happen to lose, your opponent will be the one to absorb your power, which can be troublesome
+                to your next game.""")
+            input("Enter any key to continue: ")
+            print("""After the winning pokemon absorbs the power of the losing pokemon, the battle is officially over. You will be prompted 
+                then with a message with the following:
+                Enter the following keys of your selection:
+                'c' : Change Character
+                'x' : Exit Program
+                'm' : Monitor History
+                'y' : Continue (If you happen to win the battle)
+                
+                Choosing 'c' will have you change your pokemon. WARNING: If you choose to change your pokemon when you won a battle will
+                make you lose the power you currently have. This will still make you face the same opponent.
+                Choosing 'x' will make you exit the program and lose all the progress you and the opponent made.
+                Choosing 'm' will have you look at the history tab of all the matches you and the opponent made. You can look at all the
+                details such as pokemon used, base power, final power, buff or nerf points and more. 
+                Choosing 'y' will have you continue battling with the same pokemon you used in the previous battle with the absorbed
+                power from all the pokemon you fought previously.
+                """)
+            input("Enter any key to continue: ")
+            print("""[Some tips]
+            If you have lost, take note of their element and compare which pokemon element they are weak against. You can use this to
+            have an edge in the battle
+            If you are stuck and think that the battle is unwinnable, just restart the program by closing or rerunning it. 
+            ~~More updates in the future. GOOD LUCK AND HAVE FUN!!!~~""")
+            input("Enter any key to continue: ")
+            continue
+        else:
+            print("Invalid input selection")
 game_start()
-
