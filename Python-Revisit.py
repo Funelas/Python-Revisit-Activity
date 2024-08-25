@@ -167,7 +167,7 @@ def game_start():
                 continue
 
     def opponent_character_selection(): # Used to generate a pokemon to the opponent
-        opponent_selection = "b" # Edit and put the letter of your choice pokemon if you want it to be set manually rather than randomly (original = rm.choice(list(pokemon_dictionary.keys())) )
+        opponent_selection = rm.choice(list(pokemon_dictionary.keys())) # Edit and put the letter of your choice pokemon if you want it to be set manually rather than randomly (original = rm.choice(list(pokemon_dictionary.keys())) )
         typing_effect(f"Your Opponent's Pokemon is", end= True)
         for i in range(3):
             t.sleep(0.8)
