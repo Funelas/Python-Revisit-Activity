@@ -294,15 +294,15 @@ def game_start():
                 opponent_power_base = post_opponent_power_base
                 while True:
                     typing_effect("Do you want to continue battling?")
-                    print(f"Enter the following keys of your selection:\n'c' : Change Character\n'x' : Exit Program\n'm' : Monitor History\n", end = "")
+                    print(f"Enter the following keys of your selection:\n'n' : New / Change Character\n'x' : Exit Program\n'm' : Monitor History\n", end = "")
                     if battle_outcome == "won":
-                        print(f"'y' : Continue")
+                        print(f"'c' : Continue")
                     user_choice = input()
                     if user_choice.lower() == "m":
                         print(tabulate(battle_history, headers= table_head, tablefmt="pretty")) # Process of tabulating the data we currently have
                         input("Enter any key to go back.")
                         continue
-                    elif user_choice.lower() =="y":
+                    elif user_choice.lower() =="c":
                         if battle_outcome == "won": # Rerunning the same code but this time, player will still have the same pokemon with the same power
                             opponent_pokemon = opponent_character_selection()
                             player_power_base, opponent_power_base = power_computation(player_pokemon= player_pokemon, opponent_pokemon= opponent_pokemon, player_power_base= player_power_base, opponent_power_base= opponent_power_base)
@@ -314,7 +314,7 @@ def game_start():
                             continue
                         else:
                             print("Invalid Input.")
-                    elif user_choice.lower() == "c":
+                    elif user_choice.lower() == "n":
                         change_opponent = False
                         if battle_outcome == "won":
                             typing_effect("Are you sure?")
@@ -385,16 +385,32 @@ Rock Type:                              Dark Type:
             input("Enter any key to continue: ")
             print("""\nChoosing a good elemental pokemon might also be one of the way to have your win!
 
-If you are faced with an element that you are STRONG against, you will have a chance to have a buff points ranging from 0 - 45 
-points, which is pretty big if you are against someone who have high power base. Beside this buff, the opponent's pokemon will
-also receive a nerf points ranging from -15 to 0.
+If you are faced with an element that you are STRONG against, you will have a chance to have a buff points ranging from 0 to the number equal
+to the opponent's base power, which is pretty big if you are against someone who have high power base. Beside this buff, the opponent's pokemon will
+also receive a nerf points ranging from negative number equal to the base power of the weaker pokemon up to 0.
 
-On the other hand, if you are faced with a pokemon that you are WEAK against, your pokemon will be the one to have the nerf
-ranging from -15 to 0 points, while the opponent's pokemon will receive the buff ranging from 0 - 45 points.
+Example:
+Player has a Machamp Pokemon ( Base power of 75 )
+Opponent has an Articuno Pokemon ( Base power of 70 )
+Machamp's Element is STRONG against Articuno's Element
 
-If somehow the player and the opponent's pokemon elements does not have any interaction with each other, they will rather receive either a buff or a nerf ranging from -20 to 45.
+Machamp's Final power = Machamp's base power + random number ranging from 0 to 70 ( Base power of the opponent )
+Articuno's Final power = Articuno's base power - random number ranging from 0 to 70 ( Base power of the weaker pokemon )
 
-This system can bring clutch to every match up and also significantly lowers the chance of a tie.\n""")
+
+On the other hand, if you are faced with a pokemon that you are WEAK against, the buff and nerf system will happen vice versa. 
+
+
+If somehow the player and the opponent's pokemon elements does not have any interaction with each other, they will rather receive either a buff or a nerf ranging from negative value equal to the base power of the weaker pokemon up to the base power of the player or opponent.
+
+Example:
+Player has a Articuno Pokemon ( Base power of 75 )
+Opponent has a Hitmonchan Pokemon ( Base power of 50 )
+
+Articuno's Final power = Articuno's base power + random number ranging from -50 ( Base power of the weaker pokemon ) to 50 ( Base power of the opponent pokemon )
+Hitmonchan's Final power = Hitmonchan's base power + random number ranging from -50 ( Base power of the weaker pokemon ) to 70 ( Base power of the player pokemon )
+
+This system can help improve battle fairness when it comes to winsreaks/losestreaks. The randomness also helps lowering chance of a tie.\n""")
             input("Enter any key to continue: ")
             print("""\nAfter the final power of each pokemons are computed, they will now engage to a combat. Take note that the pokemon
 that has the LARGER or GREATER power will WIN.\n""")
@@ -406,17 +422,17 @@ to your next game.\n""")
             print("""\nAfter the winning pokemon absorbs the power of the losing pokemon, the battle is officially over. You will be 
 prompted then with a message with the following:
 Enter the following keys of your selection:
-'c' : Change Character
+'n' : Change Character
 'x' : Exit Program
 'm' : Monitor History
-'y' : Continue (If you happen to win the battle)
+'c' : Continue (If you happen to win the battle)
 
-Choosing 'c' will have you change your pokemon. WARNING: If you choose to change your pokemon when you won a battle will
+Choosing 'n' will have you change your pokemon. WARNING: If you choose to change your pokemon when you won a battle will
 make you lose the power you currently have. This will still make you face the same opponent.
 Choosing 'x' will make you exit the program and lose all the progress you and the opponent made.
 Choosing 'm' will have you look at the history tab of all the matches you and the opponent made. You can look at all the
 details such as pokemon used, base power, final power, buff or nerf points and more. 
-Choosing 'y' will have you continue battling with the same pokemon you used in the previous battle with the absorbed
+Choosing 'c' will have you continue battling with the same pokemon you used in the previous battle with the absorbed
 power from all the pokemon you fought previously.\n
 """)
             input("Enter any key to continue: ")
