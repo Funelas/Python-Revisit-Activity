@@ -7,7 +7,6 @@ import time as t
 from tabulate import tabulate
 
 
-
 def game_start():
     # List of the Available Pokemons to be picked
     pokemon_dictionary = {
@@ -184,6 +183,18 @@ def game_start():
         # The mechanics of the power variation will depend on how great a pokemon's power is. This procedure will make greater powered pokemons to be less susceptible to random variation, therefore only getting minor buff or nerf. In summary, the greater your power, the less prone you are from getting a big buff or nerf, giving chance to newly selected pokemon to win even though one has already big power.
         # For example Pikachu has 50 power and Machamp has 200 power, this mechanics will make Pikachu be able to receive buff ranging from 0 - 200, while only making Machamp be only receiving power ranging from 0 - 50 ( This will be the exact case if it happens that both of the pokemons' element does not have any interaction.)
         lower_limit = player_power_base if player_power_base < opponent_power_base else opponent_power_base
+        
+        # If want a tie
+        # if player_power_base > opponent_power_base:
+        #     opponent_buffornerf = player_power_base - opponent_power_base
+        #     opponent_power_base += opponent_buffornerf
+        #     player_buffornerf = 0
+        # else:
+        #     player_buffornerf = opponent_power_base - player_power_base
+        #     player_power_base += player_buffornerf
+        #     opponent_buffornerf = 0
+        # If want a tie
+        
         if (opponent_pokemon[2] in type_interactions[player_pokemon[2]][0]) or (opponent_pokemon[2] in type_interactions[player_pokemon[2]][1]):
             typing_effect("Element Interaction Found!")
             if opponent_pokemon[2] in type_interactions[player_pokemon[2]][0]:      
@@ -213,6 +224,7 @@ def game_start():
                 f"Player's pokemon element ({player_pokemon[2]}) only deals normal damage against Opponent's pokemon element ({opponent_pokemon[2]})\n"
                 f"Player's Final Power: {player_power_base}\n"
                 f"Opponent's Final Power: {opponent_power_base}")
+        
         return player_power_base, opponent_power_base, player_buffornerf, opponent_buffornerf
     
     def battle (player_pokemon , opponent_pokemon , final_player_power, final_opponent_power, voicelines = voicelines, ending_voicelines = ending_voicelines): # Used for simulating the battle, showing voicelines and the conclusion of the battle
@@ -327,6 +339,7 @@ def game_start():
                                 print("Invalid Input.")
                                 continue
                         elif user_choice.lower() == "n":
+                            opponent_change = False
                             if battle_outcome == "won":
                                 typing_effect("Are you sure?")
                                 typing_effect("WARNING: You will lose your pokemon's current power if you proceed.")
@@ -335,9 +348,13 @@ def game_start():
                                 if change_input.lower() == "b":
                                     continue
                                 elif change_input.lower() == "p": # Rerunning the code but this time, both the opponent and the player will change pokemon
-                                    opponent_pokemon = ""
-                                    opponent_power_base = 0
+                                    opponent_change = True
+                            elif battle_outcome == "tie":
+                                opponent_change = True
                             # Rerunning the code but only changing the player's pokemon and the opponent's pokemon stays the same
+                            if opponent_change:
+                                opponent_pokemon = ""
+                                opponent_power_base = 0
                             player_pokemon = ""
                             player_power_base = 0
                             break
