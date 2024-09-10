@@ -26,7 +26,7 @@ while True:
         if user_choice not in operation_dict:
             print("Invalid Input. Must only enter and pick selection from given options.")
             continue
-        print(f'The answer is {eval(first_number+operation_dict[user_choice]+second_number)} !') # eval is used for evaluating the value of the string that will be created by the merging of strings
+        print(f'The answer is {eval(first_number+operation_dict[user_choice]+second_number):.2f} !') # eval is used for evaluating the value of the string that will be created by the merging of strings
         break
     user_input = input("Do you want to continue [any key] or exit the program[x]?\nUser Input: ") 
     if user_input == 'x':

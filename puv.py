@@ -1,6 +1,7 @@
+from tabulate import tabulate
 class PUV:
-    def __init__(self, passenger_type) -> None:
-        self.passenger_type = passenger_type
+    def __init__(self, vehicle_type) -> None:
+        self.vehicle_type = vehicle_type
         self.rate_dict = {
             'jeep' : {
                 'regular' : 12.00,
@@ -18,11 +19,8 @@ class PUV:
                 'senior citizen' : 9.50
             }
         }
-    def jeep_rate(self):
-        print(f"Your fare costs ₱{self.rate_dict['jeep'][self.passenger_type]} for this jeep trip.")
-    
-    def tricycle_rate(self):
-        print(f"Your fare costs ₱{self.rate_dict['tricycle'][self.passenger_type]} for this tricycle trip.")
-    
-    def bus_rate(self):
-        print(f"Your fare costs ₱{self.rate_dict['bus'][self.passenger_type]} for this bus trip.")
+        self.header = ["Passenger\nType", f"{self.vehicle_type.title()} Fare\n(₱)"]
+        self.rows = [[key.title(),f"₱ {value:.2f}"] for key,value in self.rate_dict[self.vehicle_type].items()]
+        print(tabulate(self.rows, headers= self.header,tablefmt= "fancy_grid", colalign= ("center", "center")))
+    def fare_rate(self, passenger_type):
+        return f"Your fare costs ₱{self.rate_dict[self.vehicle_type][passenger_type]:.2f} for this {self.vehicle_type} trip."
